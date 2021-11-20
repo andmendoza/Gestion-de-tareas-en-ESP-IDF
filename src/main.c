@@ -26,10 +26,6 @@ int numberRandom () {
    int n = rand() % 50;
    return n;
 }
-
-//esp_timer_get_time()
-
-
 //**************************************SENSOR/*****************************************
 static void vSensorTask (void *pvParameter)
 {
@@ -122,12 +118,6 @@ static void vControllerTask (void *pvParameter)
         }
     }
 }
-
-
-
-
-
-
 
 
 void app_main()
