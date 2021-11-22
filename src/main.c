@@ -12,6 +12,8 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 
+#define Configuracion Colas
+
 
 
 
@@ -58,8 +60,8 @@ static void vFilterTask (void *pvParameter)
         
 
         int array[5] = {};
-        int total = 0;
-        int media = 0;
+        float total = 0;
+        float media = 0;
 
         for(int i = 0; i < 5; i++)
         {
@@ -77,9 +79,9 @@ static void vFilterTask (void *pvParameter)
                         array[2] * .15 + 
                         array[3] * .25 +
                         array[4] * .45 ;
-                //printf("TOTAL : %u \n",total );
+                //printf("TOTAL : %5.2f \n",total );
                 media = total / (i + 1);
-                //printf("MEDIA: %u \n",media );
+                //printf("MEDIA: %5.2f \n",media );
                 xQueueSendToBack(OUTQueue,&media, 1000/portTICK_RATE_MS);
                 printf("\t\tPeriodic timer called, time since boot: %lld us \n",timestamp); 
                 //if(xQueueSendToBack(OUTQueue,&media, 1000/portTICK_RATE_MS) == pdTRUE);
@@ -109,10 +111,11 @@ static void vControllerTask (void *pvParameter)
     
     while(1) {
         
-        uint32_t txpos;
+        //uint32_t txpos;
+        float txpos;
         if (xQueueReceive(OUTQueue,&txpos, pdMS_TO_TICKS(1000))  == pdTRUE)
         {
-            printf("\t\tTask: %s: Data received -> %d\n", task_name,txpos);
+            printf("\t\tTask: %s: Data received -> %5.2f\n", task_name,txpos);
             //printf("Recibinedo MEDIA %u \n",txpos);
             //printf("Periodic timer called, time since boot: %lld us",timestamp); 
         }
@@ -129,12 +132,12 @@ void app_main()
     //nvs_flash_init();
     if (INQueue != NULL)
     {
-        xTaskCreate(vSensorTask , "SENSOR", 3072,NULL, 3, NULL); // lo que ponemos como kconfig
+        xTaskCreate(vSensorTask , "SENSOR", 3072,NULL, 3, NULL); // 
         xTaskCreate(vFilterTask, "FILTER", 3072, NULL, 2, NULL);
     }
     if (OUTQueue != NULL)
     {
-        //xTaskCreate(vFilterTask, "SENSOR", 3072,NULL, 3, NULL); // lo que ponemos como kconfig
+        //xTaskCreate(vFilterTask, "SENSOR", 3072,NULL, 3, NULL); //
         xTaskCreate(vControllerTask, "CONTROLLER", 3072, NULL, 3, NULL);
     }
 

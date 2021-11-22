@@ -1,0 +1,7 @@
+menu "Configuracion Colas"
+    config PRINT_COLAS
+    int "Print colas output"
+    range 0 5
+    default 5
+        help
+endmenu
